@@ -3,14 +3,14 @@ id: navigation-crash
 title: Crash when used with react-navigation
 ---
 
-- The YoutubePlayer causes a crash immediately on navigating to another screen, and also sometimes when navigating to the screen that contains the component.
+- The PeertubePlayer causes a crash immediately on navigating to another screen, and also sometimes when navigating to the screen that contains the component.
 - crashes are observed only on android
 - only some android versions have this issue (likely tied to google chrome version)
 
 :::info
 This will happen if you have any webviews inside a screen.
 
-This is not exclusive to the youtube player.
+This is not exclusive to the peertube player.
 :::
 
 ## Solutions
@@ -32,7 +32,7 @@ Don't try to implement ALL of them.
 />
 ```
 
-#### disable transition animations on screens that have the youtube player. ([documentation](https://reactnavigation.org/docs/stack-navigator/#animationenabled))
+#### disable transition animations on screens that have the peertube player. ([documentation](https://reactnavigation.org/docs/stack-navigator/#animationenabled))
 
 ```jsx
 <Stack.Screen
@@ -48,7 +48,7 @@ Don't try to implement ALL of them.
 #### change webview opacity to `0.99` ([issue comment](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/110#issuecomment-779848787))
 
 ```jsx
-<YoutubePlayer
+<PeertubePlayer
   webViewStyle={{opacity: 0.99}}
   //
   {...otherProps}
@@ -58,7 +58,7 @@ Don't try to implement ALL of them.
 #### set `renderToHardwareTextureAndroid` ([issue comment](https://github.com/react-native-webview/react-native-webview/issues/811#issuecomment-748611465))
 
 ```jsx
-<YoutubePlayer
+<PeertubePlayer
   webViewProps={{
     renderToHardwareTextureAndroid: true,
   }}
@@ -70,7 +70,7 @@ Don't try to implement ALL of them.
 #### tweak `androidLayerType` ([issue comment](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/110#issuecomment-786603325))
 
 ```jsx
-<YoutubePlayer
+<PeertubePlayer
   webViewProps={{
     androidLayerType:
       Platform.OS === 'android' && Platform.Version <= 22 ? 'hardware' : 'none',
@@ -82,7 +82,7 @@ Don't try to implement ALL of them.
 
 ## github threads to follow
 
-- [issue #110](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/110)
+- [issue #110](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/issues/110)
 - [issue #101](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/101)
 - [rn-webview issue #811](https://github.com/react-native-webview/react-native-webview/issues/811)
 

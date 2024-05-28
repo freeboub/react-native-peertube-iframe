@@ -1,49 +1,54 @@
 import {MUTE_MODE, PAUSE_MODE, PLAY_MODE, UNMUTE_MODE} from './constants';
 
 export const PLAYER_FUNCTIONS = {
-  muteVideo: 'player.mute(); true;',
-  unMuteVideo: 'player.unMute(); true;',
-  playVideo: 'player.playVideo(); true;',
-  pauseVideo: 'player.pauseVideo(); true;',
-  getVideoUrlScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getVideoUrl', data: player.getVideoUrl()}));
-true;
-  `,
-  durationScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getDuration', data: player.getDuration()}));
-true;
-`,
-  currentTimeScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getCurrentTime', data: player.getCurrentTime()}));
-true;
-`,
+  // muteVideo: 'player.mute(); true;',
+  // unMuteVideo: 'player.unMute(); true;',
+  playVideo: 'player.play(); true;',
+  pauseVideo: 'player.pause(); true;',
   isMutedScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'isMuted', data: player.isMuted()}));
+player.getVolume().then((volume) => {
+   window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'isMuted', data: volume === 0}));
+});
 true;
 `,
   getVolumeScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getVolume', data: player.getVolume()}));
+player.getVolume().then((volume) => {
+ window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getVolume', data: volume}));
+});
 true;
 `,
   getPlaybackRateScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getPlaybackRate', data: player.getPlaybackRate()}));
+player.getPlaybackRate().then((rate) => {
+ window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getPlaybackRate', data: rate}));
+});
 true;
 `,
   getAvailablePlaybackRatesScript: `
-window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getAvailablePlaybackRates', data: player.getAvailablePlaybackRates()}));
+player.getPlaybackRates().then(rates => {
+ window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getAvailablePlaybackRates', data: rates}));
+});
 true;
 `,
-
+  getAvailablePlaybackQualitiesScript: `
+player.getResolutions().then(resolutions => {
+ window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getAvailablePlaybackQualities', data: resolutions}));
+});
+true;
+`,
   setVolume: volume => {
     return `player.setVolume(${volume}); true;`;
   },
 
   seekToScript: (seconds, allowSeekAhead) => {
-    return `player.seekTo(${seconds}, ${allowSeekAhead}); true;`;
+    return `player.seek(${seconds}, ${allowSeekAhead}); true;`;
   },
 
   setPlaybackRate: playbackRate => {
     return `player.setPlaybackRate(${playbackRate}); true;`;
+  },
+
+  setPlaybackQuality: playbackQuality => {
+    return `player.setPlaybackQuality(${playbackQuality}); true;`;
   },
 
   loadPlaylist: (playList, startIndex, play) => {
@@ -60,10 +65,10 @@ true;
     return `player.${func}({listType: ${listType}, list: ${list}, playlist: ${playlist}, index: ${index}}); true;`;
   },
 
-  loadVideoById: (videoId, play) => {
+  loadVideoById: (videoUrl, play) => {
     const func = play ? 'loadVideoById' : 'cueVideoById';
 
-    return `player.${func}({videoId: ${JSON.stringify(videoId)}}); true;`;
+    return `player.${func}({videoUrl: ${JSON.stringify(videoUrl)}}); true;`;
   },
 };
 
@@ -78,36 +83,13 @@ export const soundMode = {
 };
 
 export const MAIN_SCRIPT = (
-  videoId,
+  videoUrl,
   playList,
-  initialPlayerParams,
   allowWebViewZoom,
   contentScale,
 ) => {
-  const {
-    end,
-    rel,
-    color,
-    start,
-    playerLang,
-    loop = false,
-    cc_lang_pref,
-    iv_load_policy,
-    modestbranding,
-    controls = true,
-    showClosedCaptions,
-    preventFullScreen = false,
-  } = initialPlayerParams;
-
   // _s postfix to refer to "safe"
-  const rel_s = rel ? 1 : 0;
-  const loop_s = loop ? 1 : 0;
-  const videoId_s = videoId || '';
-  const controls_s = controls ? 1 : 0;
-  const cc_lang_pref_s = cc_lang_pref || '';
-  const modestbranding_s = modestbranding ? 1 : 0;
-  const preventFullScreen_s = preventFullScreen ? 0 : 1;
-  const showClosedCaptions_s = showClosedCaptions ? 1 : 0;
+  const videoUrl_s = videoUrl || '';
   const contentScale_s = typeof contentScale === 'number' ? contentScale : 1.0;
 
   const list = typeof playList === 'string' ? playList : undefined;
@@ -122,31 +104,15 @@ export const MAIN_SCRIPT = (
   }
 
   const safeData = {
-    end,
     list,
-    start,
-    color,
-    rel_s,
-    loop_s,
     listType,
     playlist,
-    videoId_s,
-    controls_s,
-    playerLang,
-    iv_load_policy,
+    videoUrl_s,
     contentScale_s,
-    cc_lang_pref_s,
     allowWebViewZoom,
-    modestbranding_s,
-    preventFullScreen_s,
-    showClosedCaptions_s,
   };
 
   const urlEncodedJSON = encodeURI(JSON.stringify(safeData));
-
-  const listParam = list ? `list: '${list}',` : '';
-  const listTypeParam = listType ? `listType: '${list}',` : '';
-  const playlistParam = playList ? `playlist: '${playList}',` : '';
 
   const htmlString = `
 <!DOCTYPE html>
@@ -175,62 +141,33 @@ export const MAIN_SCRIPT = (
       }
     </style>
   </head>
+  <script src="https://unpkg.com/@peertube/embed-api/build/player.min.js"></script>
+    
   <body>
-    <div class="container">
-      <div class="video" id="player" />
-    </div>
-
+    <iframe src="${videoUrl_s}"></iframe>
     <script>
-      var tag = document.createElement('script');
+      // require('events').EventEmitter.prototype._maxListeners = 100;
+      const PeerTubePlayer = window['PeerTubePlayer']
 
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      console.log('PeerTubePlayer player', PeerTubePlayer)
 
-      var player;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-          width: '1000',
-          height: '1000',
-          videoId: '${videoId_s}',
-          playerVars: {
-            ${listParam}
-            ${listTypeParam}
-            ${playlistParam}
+      let player = new PeerTubePlayer(document.querySelector('iframe'))
+      console.log('PeerTubePlayer', 'ici la', player)
 
-            end: ${end},
-            rel: ${rel_s},
-            playsinline: 1,
-            loop: ${loop_s},
-            color: ${color},
-            start: ${start},
-            hl: ${playerLang},
-            controls: ${controls_s},
-            fs: ${preventFullScreen_s},
-            cc_lang_pref: '${cc_lang_pref_s}',
-            iv_load_policy: ${iv_load_policy},
-            modestbranding: ${modestbranding_s},
-            cc_load_policy: ${showClosedCaptions_s},
-          },
-          events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onError': onPlayerError,
-            'onPlaybackQualityChange': onPlaybackQualityChange,
-            'onPlaybackRateChange': onPlaybackRateChange,
-          }
-        });
-      }
+      window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerReady'}))
 
-      function onPlayerError(event) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerError', data: event.data}))
-      }
+      player.addEventListener('playbackStatusUpdate', onPlayerStateChange)
+      player.addEventListener('playbackStatusChange', onPlayerStateChange)
+      player.addEventListener('resolutionUpdate', onPlaybackQualityChange)
+      //player.addEventListener('volumeChange', onPlayerStateChange)
 
       function onPlaybackRateChange(event) {
         window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playbackRateChange', data: event.data}))
       }
 
       function onPlaybackQualityChange(event) {
+        console.log('playerQualityChange ICI', JSON.stringify(event))
+
         window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerQualityChange', data: event.data}))
       }
 
@@ -239,8 +176,8 @@ export const MAIN_SCRIPT = (
       }
 
       var done = false;
-      function onPlayerStateChange(event) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerStateChange', data: event.data}))
+      function onPlayerStateChange(event) {  
+        window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerStateChange', data: event}))
       }
 
       var isFullScreen = false;
@@ -257,6 +194,5 @@ export const MAIN_SCRIPT = (
   </body>
 </html>
 `;
-
   return {htmlString, urlEncodedJSON};
 };

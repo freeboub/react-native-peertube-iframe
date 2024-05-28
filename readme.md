@@ -1,15 +1,13 @@
-# React Native Youtube iframe
+# React Native Peertube iframe
 
-![npm](https://img.shields.io/npm/v/react-native-youtube-iframe?style=for-the-badge) ![npm](https://img.shields.io/npm/dm/react-native-youtube-iframe?style=for-the-badge)
+![npm](https://img.shields.io/npm/v/react-native-peertube-iframe?style=for-the-badge) ![npm](https://img.shields.io/npm/dm/react-native-peertube-iframe?style=for-the-badge)
 
-A wrapper of the Youtube IFrame player API build for react native.
+A wrapper of the Peertube IFrame player API build for react native.
 
 - ✅ Works seamlessly on both ios and android platforms
-- ✅ Does not rely on the native youtube service on android (prevents unexpected crashes, works on phones without the youtube app)
-- ✅ Uses the webview player which is known to be more stable compared to the native youtube app
-- ✅ Access to a vast API provided through the iframe youtube API
-- ✅ Supports multiple youtube player instances in a single page
-- ✅ Fetch basic video metadata without API keys (uses oEmbed)
+- ✅ Uses the webview player which is known to be more stable
+- ✅ Access to a vast API provided through the iframe peertube API
+- ✅ Supports multiple peertube player instances in a single page
 - ✅ Works on modals and overlay components
 - ✅ Expo support
 
@@ -17,7 +15,7 @@ A wrapper of the Youtube IFrame player API build for react native.
 
 ## Installation and Documentation
 
-[react-native-youtube-iframe](https://lonelycpp.github.io/react-native-youtube-iframe/)
+[react-native-peertube-iframe](https://freeboub.github.io/react-native-peertube-iframe/)
 
 ## Contributing
 

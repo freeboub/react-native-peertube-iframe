@@ -57,11 +57,11 @@ Embedded players must have a viewport that is at least 200px by 200px. If the pl
 
 ---
 
-### `videoId`
+### `videoUrl`
 
 <Type>String</Type>
 
-Specifies the YouTube Video ID of the video to be played.
+Specifies the Peertube Video url of the video to be played.
 
 ---
 
@@ -98,7 +98,7 @@ Works only if the playlist is a list of video IDs
 Flag to tell the player to play or pause the video.
 
 Make sure you match this flag `onChangeState` to handle user pausing
-the video from the youtube player UI
+the video from the peertube player UI
 
 :::note autoPlay
 The HTML5 `<video>` element, in certain mobile browsers (such as Chrome and Safari), only allows playback to take place if it's initiated by user interaction (such as tapping on the player).
@@ -110,29 +110,11 @@ However, the webview provides APIs to overcome this and will allow auto play in 
 
 ### `ref`
 
-<Type>YoutubeIframeRef</Type>
+<Type>PeertubeIframeRef</Type>
 
 Gives access to the player reference. This can be used to access player functions.
 
 [Player Functions Documentation](component-ref-methods)
-
----
-
-### `baseUrlOverride`
-
-<Type>String</Type>
-
-A link that serves the iframe code. If you want to host the code on your own domain, get the source from [here](https://github.com/LonelyCpp/react-native-youtube-iframe/blob/master/iframe.html).
-
-Default link - https://lonelycpp.github.io/react-native-youtube-iframe/iframe.html
-
----
-
-### `useLocalHTML`
-
-<Type>Boolean</Type>
-
-use locally generated html to render on the webview
 
 ---
 
@@ -145,8 +127,6 @@ This event fires whenever the player's state changes. The callback is fired with
 | events    | description                                                 |
 | --------- | ----------------------------------------------------------- |
 | unstarted | fired before the first video is loaded                      |
-| video cue | next video cue                                              |
-| buffering | current video is in playing state but stopped for buffering |
 | playing   | current video is playing                                    |
 | paused    | current video is paused                                     |
 | ended     | video has finished playing the video                        |
@@ -158,22 +138,6 @@ This event fires whenever the player's state changes. The callback is fired with
 <Type>function(event: string)</Type>
 
 This event fires when the player has finished loading and is ready to begin receiving API calls. Your application should implement this function if you want to automatically execute certain operations, such as playing the video or displaying information about the video, as soon as the player is ready.
-
----
-
-### `onError`
-
-<Type>function(error: string)</Type>
-
-This event fires if an error occurs in the player. The API will pass an error string to the event listener function.
-Possible values are:
-
-| errors            | reason                                                                                                                                                                                                                               |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| invalid_parameter | The request contains an invalid parameter value. For example, this error occurs if you specify a video ID that does not have 11 characters, or if the video ID contains invalid characters, such as exclamation points or asterisks. |
-| HTML5_error       | The requested content cannot be played in an HTML5 player or another error related to the HTML5 player has occurred.                                                                                                                 |
-| video_not_found   | The video requested was not found. This error occurs when a video has been removed (for any reason) or has been marked as private.                                                                                                   |
-| embed_not_allowed | The owner of the requested video does not allow it to be played in embedded players.                                                                                                                                                 |
 
 ---
 
@@ -236,6 +200,16 @@ The `getAvailablePlaybackRates` method will return the possible playback rates f
 
 ---
 
+### `playbackQuality`
+
+<Type>Number</Type>
+
+This sets the playback quality for the current video.
+
+The `getAvailablePlaybackQualities` method will return the possible playback qualities for the currently playing video.
+
+---
+
 ### `onPlaybackRateChange`
 
 <Type>function(playbackRate: Number)</Type>
@@ -256,20 +230,26 @@ A set of parameters that are initialized when the player mounts.
 changing these parameters might cause the player to restart or not change at all till it is remounted
 :::
 
-| property           | type    | default | info                                                                   |
-| ------------------ | ------- | ------- | ---------------------------------------------------------------------- |
-| loop               | boolean | false   | https://developers.google.com/youtube/player_parameters#loop           |
-| controls           | boolean | true    | https://developers.google.com/youtube/player_parameters#controls       |
-| cc_lang_pref       | string  |         | https://developers.google.com/youtube/player_parameters#cc_lang_pref   |
-| showClosedCaptions | boolean | false   | https://developers.google.com/youtube/player_parameters#cc_load_policy |
-| color              | string  | 'red'   | https://developers.google.com/youtube/player_parameters#color          |
-| start              | Number  |         | https://developers.google.com/youtube/player_parameters#start          |
-| end                | Number  |         | https://developers.google.com/youtube/player_parameters#end            |
-| preventFullScreen  | boolean | false   | https://developers.google.com/youtube/player_parameters#fs             |
-| playerLang         | String  |         | https://developers.google.com/youtube/player_parameters#hl             |
-| iv_load_policy     | Number  |         | https://developers.google.com/youtube/player_parameters#iv_load_policy |
-| modestbranding     | boolean | false   | https://developers.google.com/youtube/player_parameters#modestbranding |
-| rel                | boolean | false   | https://developers.google.com/youtube/player_parameters#rel            |
+
+| property                  | type              | info                                                                   |
+| ------------------        | -------           | ---------------------------------------------------------------------- |
+| start                     | Number or String  | https://docs.joinpeertube.org/api/embed-player#start                   |
+| stop                      | Number or String  | https://docs.joinpeertube.org/api/embed-player#stop                    |
+| controls                  | Number or String  | https://docs.joinpeertube.org/api/embed-player#controls                |
+| controlBar                | Number or String  | https://docs.joinpeertube.org/api/embed-player#controlBar              |
+| peertubeLink              | Number or String  | https://docs.joinpeertube.org/api/embed-player#peertubeLink            |
+| loop                      | Number or String  | https://docs.joinpeertube.org/api/embed-player#loop                    |
+| muted                     | Number or String  | https://docs.joinpeertube.org/api/embed-player#muted                   |
+| subtitle                  | String            | https://docs.joinpeertube.org/api/embed-player#subtitle                |
+| autoplay                  | Number or String  | https://docs.joinpeertube.org/api/embed-player#autoplay                |
+| playbackRate              | Number or String  | https://docs.joinpeertube.org/api/embed-player#playbackRate            |
+| title                     | String            | https://docs.joinpeertube.org/api/embed-player#title                   |
+| warningTitle              | String            | https://docs.joinpeertube.org/api/embed-player#warningTitle            |
+| p2p                       | Number or String  | https://docs.joinpeertube.org/api/embed-player#p2p                     |
+| bigPlayBackgroundColor    | String            | https://docs.joinpeertube.org/api/embed-player#bigPlayBackgroundColor  |
+| foregroundColor           | String            | https://docs.joinpeertube.org/api/embed-player#foregroundColor         |
+| mode                      | String            | https://docs.joinpeertube.org/api/embed-player#mode                    |
+| waitPasswordFromEmbed     | Number or String  | https://docs.joinpeertube.org/api/embed-player#waitPasswordFromEmbed   |
 
 ---
 

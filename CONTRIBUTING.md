@@ -30,7 +30,7 @@ The repo uses **eslint** and **prettier** to enforce some style and lint rules. 
 ```json
 {
   "dependencies": {
-    "react-native-youtube-iframe": "path/to/cloned/folder"
+    "react-native-peertube-iframe": "path/to/cloned/folder"
   }
 }
 ```

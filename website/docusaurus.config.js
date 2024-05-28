@@ -1,27 +1,27 @@
 module.exports = {
-  title: 'React Native Youtube iframe',
+  title: 'React Native Peertube iframe',
   tagline:
-    'A simple, light weight wrapper around the youtube iframe javascript API for react native',
-  url: 'https://lonelycpp.github.io',
-  baseUrl: '/react-native-youtube-iframe/',
+    'A simple, light weight wrapper around the peertube iframe javascript API for react native',
+  url: 'https://freeboub.github.io',
+  baseUrl: '/react-native-peertube-iframe/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
-  organizationName: 'LonelyCpp',
-  projectName: 'react-native-youtube-iframe',
+  organizationName: 'freeboub',
+  projectName: 'react-native-peertube-iframe',
   themeConfig: {
     sidebarCollapsible: false,
     colorMode: {
       defaultMode: 'dark',
     },
     navbar: {
-      title: 'React Native Youtube-iframe',
+      title: 'React Native Peertube-iframe',
       logo: {
-        alt: 'React Native Youtube-iframe Logo',
+        alt: 'React Native Peertube-iframe Logo',
         src: 'img/logo.svg',
       },
       items: [
         {
-          href: 'https://github.com/LonelyCpp/react-native-youtube-iframe',
+          href: 'https://github.com/freeboub/react-native-peertube-iframe',
           label: 'GitHub',
           position: 'right',
         },

@@ -20,21 +20,21 @@ export const Type = ({children, color}) => (
 
 ```jsx
 import React, {useRef} from 'react';
-import YoutubePlayer, {YoutubeIframeRef} from "react-native-youtube-iframe";
+import PeertubePlayer, {PeertubeIframeRef} from "react-native-peertube-iframe";
 
 const App = () => {
 
   const playerRef = useRef();
 
   // typescript
-  // const playerRef = useRef<YoutubeIframeRef>(null);
+  // const playerRef = useRef<PeertubeIframeRef>(null);
 
   return (
-    <YoutubePlayer
+    <PeertubePlayer
         ref={playerRef}
         height={400}
         width={400}
-        videoId={'AVAc1gYLZK0'}
+        videoUrl={'https://vidz.julien.ovh/videos/embed/105fd6ef-3048-43c3-b877-fdb8aaab11d5'}
       />
 
     <Button
@@ -111,13 +111,23 @@ The array of numbers are ordered from slowest to fastest playback speed. Even if
 
 ---
 
+### `getAvailablePlaybackQualities`
+
+<Type>function(): Promise[Array[PeertubePlaybackQuality]]</Type>
+
+returns a promise that resolves to a list of available playback quality.
+
+PeertubePlaybackQuality represent a video selectable track with and id, a labal, the resolution and a boolean indicating if the tracks is selected.
+
+---
+
 ### `seekTo`
 
 <Type>function(seconds:Number, allowSeekAhead:Boolean):Void</Type>
 
-Seeks to a specified time in the video. If the player is paused when the function is called, it will remain paused. If the function is called from another state (playing, video cued, etc.), the player will play the video.
+Seeks to a specified time in the video. If the player is paused when the function is called, it will remain paused. If the function is called from another state (playing, etc.), the player will play the video.
 The seconds parameter identifies the time to which the player should advance.
 
 The player will advance to the closest keyframe before that time unless the player has already downloaded the portion of the video to which the user is seeking.
 
-https://developers.google.com/youtube/iframe_api_reference#seekTo
+https://developers.google.com/peertube/iframe_api_reference#seekTo

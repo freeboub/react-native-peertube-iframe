@@ -3,12 +3,12 @@ id: basic-usage
 title: Basic Usage
 ---
 
-This snippet renders a Youtube video with a button that can play or pause the video. When the player has finished playing it, an alert is triggered.
+This snippet renders a Peertube video with a button that can play or pause the video. When the player has finished playing it, an alert is triggered.
 
 ```jsx
 import React, { useState, useCallback, useRef } from "react";
 import { Button, View, Alert } from "react-native";
-import YoutubePlayer from "react-native-youtube-iframe";
+import PeertubePlayer from "react-native-peertube-iframe";
 
 export default function App() {
   const [playing, setPlaying] = useState(false);
@@ -26,10 +26,10 @@ export default function App() {
 
   return (
     <View>
-      <YoutubePlayer
+      <PeertubePlayer
         height={300}
         play={playing}
-        videoId={"iee2TATGMyI"}
+        videoUrl={'https://vidz.julien.ovh/videos/embed/105fd6ef-3048-43c3-b877-fdb8aaab11d5'}
         onChangeState={onStateChange}
       />
       <Button title={playing ? "pause" : "play"} onPress={togglePlaying} />

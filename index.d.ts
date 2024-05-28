@@ -7,28 +7,46 @@ export enum PLAYER_STATES {
   PAUSED = 'paused',
   PLAYING = 'playing',
   UNSTARTED = 'unstarted',
-  BUFFERING = 'buffering',
-  VIDEO_CUED = 'video cued',
 }
 
-export enum PLAYER_ERRORS {
-  HTML5_ERROR = 'HTML5_error',
-  VIDEO_NOT_FOUND = 'video_not_found',
-  EMBED_NOT_ALLOWED = 'embed_not_allowed',
-  INVALID_PARAMETER = 'invalid_parameter',
+export interface PeertubePlaybackQuality {
+  id: number;
+  label: string;
+  height: string;
+  active: boolean
 }
-
-export interface YoutubeIframeRef {
+export interface PeertubeIframeRef {
   getDuration: () => Promise<number>;
-  getVideoUrl: () => Promise<string>;
   getCurrentTime: () => Promise<number>;
   isMuted: () => Promise<boolean>;
   getVolume: () => Promise<number>;
   getPlaybackRate: () => Promise<number>;
   getAvailablePlaybackRates: () => Promise<number[]>;
+  getAvailablePlaybackQualities: () => Promise<PeertubePlaybackQuality[]>;
   seekTo: (seconds: number, allowSeekAhead: boolean) => void;
 }
 
+export interface PeertubeIframeUrlParameters {
+    start: number | string
+    stop: number | string
+    controls: number | string
+    controlBar: number | string
+    peertubeLink: number | string
+    muted: number | string
+    loop: number | string
+    subtitle: string
+    autoplay: number | string
+    playbackRate: number | string
+    title: number | string
+    warningTitle: number | string
+    p2p: number | string
+    bigPlayBackgroundColor: string
+    foregroundColor: string
+    mode: string
+    waitPasswordFromEmbedAPI: number | string
+}
+
+// FIXME
 export interface InitialPlayerParams {
   loop?: boolean;
   controls?: boolean;
@@ -42,13 +60,13 @@ export interface InitialPlayerParams {
   iv_load_policy?: Number;
   /** 
    * @deprecated - This parameter has no effect since August 15, 2023
-   * https://developers.google.com/youtube/player_parameters#modestbranding
+   * https://developers.google.com/peertube/player_parameters#modestbranding
    */
   deprecated?: boolean;
   rel?: boolean;
 }
 
-export interface YoutubeIframeProps {
+export interface PeertubeIframeProps {
   /**
    * height of the webview container
    *
@@ -62,9 +80,9 @@ export interface YoutubeIframeProps {
    */
   width?: number;
   /**
-   * Specifies the YouTube Video ID of the video to be played.
+   * Specifies the Peertube Video Url of the video to be played.
    */
-  videoId?: string;
+  videoUrl?: string;
   /**
    * Specifies the playlist to play. It can be either the playlist ID or a list of video IDs
    *
@@ -104,10 +122,10 @@ export interface YoutubeIframeProps {
    * This sets the suggested playback rate for the current video. If the playback rate changes, it will only change for the video that is already cued or being played.
    */
   playbackRate?: number;
-  /**
-   * This event fires if an error occurs in the player. The API will pass an error string to the event listener function.
-   */
-  onError?: (error: string) => void;
+/**
+ * this select video track to playback. -1 will enable automatic selection 
+ */
+  playbackQuality?: number;
   /**
    * This event fires whenever a player has finished loading and is ready.
    */
@@ -146,42 +164,16 @@ export interface YoutubeIframeProps {
   /**
    * Set this React Ref to use ref functions such as getDuration.
    */
-  ref?: React.MutableRefObject<YoutubeIframeRef | null>;
+  ref?: React.MutableRefObject<PeertubeIframeRef | null>;
   /**
    * scale factor for initial-scale and maximum-scale in
    * <meta /> tag on the webpage
    */
   contentScale?: number;
-  /**
-   * force use locally generated HTML string. defaults to `false`
-   */
-  useLocalHTML?: boolean;
-  /**
-   * url that fetches a webpage compatible with youtube iframe interface
-   *
-   * * defaults to : https://lonelycpp.github.io/react-native-youtube-iframe/iframe.html
-   * * for code check "iframe.html" in package repo
-   */
-  baseUrlOverride?: string;
+
+  videoUrlParameters: PeertubeIframeUrlParameters;
 }
 
-export interface YoutubeMeta {
-  thumbnail_width: number;
-  type: string;
-  html: string;
-  height: number;
-  author_name: string;
-  width: number;
-  title: string;
-  author_url: string;
-  version: string;
-  thumbnail_height: number;
-  provider_url: string;
-  thumbnail_url: string;
-}
+declare const PeertubeIframe: React.VFC<PeertubeIframeProps>;
 
-declare const YoutubeIframe: React.VFC<YoutubeIframeProps>;
-
-export default YoutubeIframe;
-
-export function getYoutubeMeta(id: string): Promise<YoutubeMeta>;
+export default PeertubeIframe;

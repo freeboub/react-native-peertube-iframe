@@ -10,12 +10,7 @@ import React, {
 import {Linking, Platform, StyleSheet, View} from 'react-native';
 import {EventEmitter} from 'events';
 import {WebView} from './WebView';
-import {
-  PLAYER_ERROR,
-  PLAYER_STATES,
-  DEFAULT_BASE_URL,
-  CUSTOM_USER_AGENT,
-} from './constants';
+import {PLAYER_STATES, CUSTOM_USER_AGENT} from './constants';
 import {
   playMode,
   soundMode,
@@ -24,11 +19,10 @@ import {
 } from './PlayerScripts';
 import {deepComparePlayList} from './utils';
 
-const YoutubeIframe = (props, ref) => {
+const PeertubeIframe = (props, ref) => {
   const {
     height,
     width,
-    videoId,
     playList,
     play = false,
     mute = false,
@@ -36,11 +30,9 @@ const YoutubeIframe = (props, ref) => {
     viewContainerStyle,
     webViewStyle,
     webViewProps,
-    useLocalHTML,
-    baseUrlOverride,
+    videoUrl,
     playbackRate = 1,
     contentScale = 1.0,
-    onError = _err => {},
     onReady = _event => {},
     playListStartIndex = 0,
     initialPlayerParams,
@@ -50,35 +42,29 @@ const YoutubeIframe = (props, ref) => {
     onFullScreenChange = _status => {},
     onPlaybackQualityChange = _quality => {},
     onPlaybackRateChange = _playbackRate => {},
+    playbackQuality = -1,
+    videoUrlParameters = {},
   } = props;
 
   const [playerReady, setPlayerReady] = useState(false);
-  const lastVideoIdRef = useRef(videoId);
   const lastPlayListRef = useRef(playList);
   const initialPlayerParamsRef = useRef(initialPlayerParams || {});
 
   const webViewRef = useRef(null);
   const eventEmitter = useRef(new EventEmitter());
+  const playbackDataRef = useRef({});
 
   useImperativeHandle(
     ref,
     () => ({
-      getVideoUrl: () => {
-        webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.getVideoUrlScript);
-        return new Promise(resolve => {
-          eventEmitter.current.once('getVideoUrl', resolve);
-        });
-      },
       getDuration: () => {
-        webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.durationScript);
         return new Promise(resolve => {
-          eventEmitter.current.once('getDuration', resolve);
+          resolve(playbackDataRef.current.duration);
         });
       },
       getCurrentTime: () => {
-        webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.currentTimeScript);
         return new Promise(resolve => {
-          eventEmitter.current.once('getCurrentTime', resolve);
+          resolve(playbackDataRef.current.position);
         });
       },
       isMuted: () => {
@@ -109,6 +95,14 @@ const YoutubeIframe = (props, ref) => {
           eventEmitter.current.once('getAvailablePlaybackRates', resolve);
         });
       },
+      getAvailablePlaybackQualities: () => {
+        webViewRef.current.injectJavaScript(
+          PLAYER_FUNCTIONS.getAvailablePlaybackQualitiesScript,
+        );
+        return new Promise(resolve => {
+          eventEmitter.current.once('getAvailablePlaybackQualities', resolve);
+        });
+      },
       seekTo: (seconds, allowSeekAhead) => {
         webViewRef.current.injectJavaScript(
           PLAYER_FUNCTIONS.seekToScript(seconds, allowSeekAhead),
@@ -129,22 +123,9 @@ const YoutubeIframe = (props, ref) => {
       soundMode[mute],
       PLAYER_FUNCTIONS.setVolume(volume),
       PLAYER_FUNCTIONS.setPlaybackRate(playbackRate),
+      PLAYER_FUNCTIONS.setPlaybackQuality(playbackQuality),
     ].forEach(webViewRef.current.injectJavaScript);
-  }, [play, mute, volume, playbackRate, playerReady]);
-
-  useEffect(() => {
-    if (!playerReady || lastVideoIdRef.current === videoId) {
-      // no instance of player is ready
-      // or videoId has not changed
-      return;
-    }
-
-    lastVideoIdRef.current = videoId;
-
-    webViewRef.current.injectJavaScript(
-      PLAYER_FUNCTIONS.loadVideoById(videoId, play),
-    );
-  }, [videoId, play, playerReady]);
+  }, [play, mute, volume, playbackRate, playerReady, playbackQuality]);
 
   useEffect(() => {
     if (!playerReady) {
@@ -165,17 +146,36 @@ const YoutubeIframe = (props, ref) => {
     );
   }, [playList, play, playListStartIndex, playerReady]);
 
+  const updatePlayerState = useCallback(
+    newState => {
+      if (typeof newState !== 'object') {
+        return;
+      }
+
+      if (newState.playbackState !== playbackDataRef.current.playbackState) {
+        console.log('newState.playbackState', newState);
+        onChangeState(
+          PLAYER_STATES[newState.playbackState] || PLAYER_STATES[newState],
+        );
+      }
+      playbackDataRef.current = newState;
+    },
+    [onChangeState],
+  );
+
   const onWebMessage = useCallback(
     event => {
+      // console.log('onWebMessage', event.nativeEvent.data);
       try {
         const message = JSON.parse(event.nativeEvent.data);
+        console.log('onWebMessage', message.eventType, message.data);
 
         switch (message.eventType) {
           case 'fullScreenChange':
             onFullScreenChange(message.data);
             break;
           case 'playerStateChange':
-            onChangeState(PLAYER_STATES[message.data]);
+            updatePlayerState(message.data);
             break;
           case 'playerReady':
             onReady();
@@ -183,9 +183,6 @@ const YoutubeIframe = (props, ref) => {
             break;
           case 'playerQualityChange':
             onPlaybackQualityChange(message.data);
-            break;
-          case 'playerError':
-            onError(PLAYER_ERROR[message.data]);
             break;
           case 'playbackRateChange':
             onPlaybackRateChange(message.data);
@@ -195,16 +192,15 @@ const YoutubeIframe = (props, ref) => {
             break;
         }
       } catch (error) {
-        console.warn('[rn-youtube-iframe]', error);
+        console.warn('[rn-peertube-iframe]', error);
       }
     },
     [
-      onReady,
-      onError,
-      onChangeState,
       onFullScreenChange,
-      onPlaybackRateChange,
+      updatePlayerState,
+      onReady,
       onPlaybackQualityChange,
+      onPlaybackRateChange,
     ],
   );
 
@@ -217,47 +213,70 @@ const YoutubeIframe = (props, ref) => {
           if (iosFirstLoad) {
             return true;
           }
-          const isYouTubeLink = url.startsWith('https://www.youtube.com/');
-          if (isYouTubeLink) {
-            Linking.openURL(url).catch(error => {
-              console.warn('Error opening URL:', error);
-            });
-            return false;
-          }
+          Linking.openURL(url).catch(error => {
+            console.warn('Error opening URL:', error);
+          });
+          return false;
         }
-        return url.startsWith(baseUrlOverride || DEFAULT_BASE_URL);
+        return url.startsWith(videoUrl);
       } catch (error) {
         // defaults to true in case of error
         // returning false stops the video from loading
         return true;
       }
     },
-    [baseUrlOverride],
+    [videoUrl],
   );
 
   const source = useMemo(() => {
+    const videoUrlSafe = new URL(videoUrl);
+    const applyIfNeeded = (key, value) => {
+      if (value !== undefined) {
+        videoUrlSafe.searchParams.append(key, value);
+      }
+    };
+    if (videoUrlParameters) {
+      applyIfNeeded('start', videoUrlParameters.start);
+      applyIfNeeded('stop', videoUrlParameters.stop);
+      applyIfNeeded('controls', videoUrlParameters.controls);
+      applyIfNeeded('controlBar', videoUrlParameters.controlBar);
+      applyIfNeeded('peertubeLink', videoUrlParameters.peertubeLink);
+      applyIfNeeded('muted', videoUrlParameters.muted);
+      applyIfNeeded('loop', videoUrlParameters.loop);
+      applyIfNeeded('subtitle', videoUrlParameters.subtitle);
+      applyIfNeeded('autoplay', videoUrlParameters.autoplay);
+      applyIfNeeded('playbackRate', videoUrlParameters.playbackRate);
+      applyIfNeeded('title', videoUrlParameters.title);
+      applyIfNeeded('warningTitle', videoUrlParameters.warningTitle);
+      applyIfNeeded('p2p', videoUrlParameters.p2p);
+      applyIfNeeded(
+        'bigPlayBackgroundColor',
+        videoUrlParameters.bigPlayBackgroundColor,
+      );
+      applyIfNeeded('foregroundColor', videoUrlParameters.foregroundColor);
+      applyIfNeeded('mode', videoUrlParameters.mode);
+      applyIfNeeded(
+        'waitPasswordFromEmbedAPI',
+        videoUrlParameters.waitPasswordFromEmbedAPI,
+      );
+    }
+    videoUrlSafe.searchParams.append('api', '1');
+
+    const vidUrl = videoUrlSafe.href.replace(videoUrl + '/', videoUrl)
+    console.log('url', vidUrl);
     const ytScript = MAIN_SCRIPT(
-      lastVideoIdRef.current,
+      vidUrl,
       lastPlayListRef.current,
-      initialPlayerParamsRef.current,
+//      initialPlayerParamsRef.current,
       allowWebViewZoom,
       contentScale,
     );
 
-    if (useLocalHTML) {
-      const res = {html: ytScript.htmlString};
-      if (baseUrlOverride) {
-        res.baseUrl = baseUrlOverride;
-      }
-      return res;
-    }
+    const res = {html: ytScript.htmlString, videoUrl: vidUrl};
+    return res;
+  }, [allowWebViewZoom, contentScale, videoUrl, videoUrlParameters]);
 
-    const base = baseUrlOverride || DEFAULT_BASE_URL;
-    const data = ytScript.urlEncodedJSON;
-
-    return {uri: base + '?data=' + data};
-  }, [useLocalHTML, contentScale, baseUrlOverride, allowWebViewZoom]);
-
+  //console.log('loading WebView with source', source);
   return (
     <View style={[{height, width}, viewContainerStyle]}>
       <WebView
@@ -294,4 +313,4 @@ const styles = StyleSheet.create({
   webView: {backgroundColor: 'transparent'},
 });
 
-export default forwardRef(YoutubeIframe);
+export default forwardRef(PeertubeIframe);

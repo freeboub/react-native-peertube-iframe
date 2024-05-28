@@ -1,7 +1,7 @@
 {
-  "name": "react-native-youtube-iframe",
-  "version": "2.3.0",
-  "description": "A simple wrapper around the youtube iframe js API for react native",
+  "name": "react-native-peertube-iframe",
+  "version": "0.0.1",
+  "description": "A simple wrapper around the peertube iframe js API for react native",
   "main": "dist/index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LonelyCpp/react-native-youtube-iframe.git"
+    "url": "git+https://github.com/freeboub/react-native-peertube-iframe.git"
   },
   "keywords": [
     "react-native",
@@ -24,16 +24,16 @@
     "ios",
     "android",
     "ui",
-    "youtube",
-    "youtube-iframe",
+    "peertube",
+    "peertube-iframe",
     "iframe"
   ],
   "author": "Ananthu P Kanive",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LonelyCpp/react-native-youtube-iframe/issues"
+    "url": "https://github.com/freeboub/react-native-peertube-iframe/issues"
   },
-  "homepage": "https://lonelycpp.github.io/react-native-youtube-iframe/",
+  "homepage": "https://freeboub.github.io/react-native-peertube-iframe/",
   "peerDependencies": {
     "react": ">=16.8.6",
     "react-native": ">=0.60",
@@ -58,5 +58,6 @@
   },
   "dependencies": {
     "events": "^3.2.0"
-  }
+  },
+  "packageManager": "yarn@3.6.4"
 }

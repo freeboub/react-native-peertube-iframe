@@ -22,7 +22,7 @@ If applicable, add screenshots to help explain your problem.
 **Smartphone (please complete the following information):**
  - Device: [e.g. iPhone6]
  - OS + version: [e.g. iOS 13.5 | Android 10]
- - `react-native-youtube-iframe` version 
+ - `react-native-peertube-iframe` version
  - `react-native-webview` version
  - `Expo` verison [if using expo]
 

@@ -10,7 +10,7 @@ example:
 ```javascript
 import React, {useState, useRef, useEffect} from 'react';
 import {Text, View} from 'react-native';
-import YoutubePlayer from 'react-native-youtube-iframe';
+import PeertubePlayer from 'react-native-peertube-iframe';
 
 const App = () => {
   const [elapsed, setElapsed] = useState(0);
@@ -42,10 +42,10 @@ const App = () => {
 
   return (
     <>
-      <YoutubePlayer
+      <PeertubePlayer
         height={250}
         ref={playerRef}
-        videoId={'DC471a9qrU4'}
+        videoUrl={'https://vidz.julien.ovh/videos/embed/105fd6ef-3048-43c3-b877-fdb8aaab11d5'}
       />
       <View>
         <View style={{flexDirection: 'row'}}>
