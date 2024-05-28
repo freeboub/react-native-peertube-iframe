@@ -262,12 +262,12 @@ const PeertubeIframe = (props, ref) => {
     }
     videoUrlSafe.searchParams.append('api', '1');
 
-    const vidUrl = videoUrlSafe.href.replace(videoUrl + '/', videoUrl)
+    const vidUrl = videoUrlSafe.href.replace(videoUrl + '/', videoUrl);
     console.log('url', vidUrl);
     const ytScript = MAIN_SCRIPT(
       vidUrl,
       lastPlayListRef.current,
-//      initialPlayerParamsRef.current,
+      //      initialPlayerParamsRef.current,
       allowWebViewZoom,
       contentScale,
     );
