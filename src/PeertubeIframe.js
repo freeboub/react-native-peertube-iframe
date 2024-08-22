@@ -7,23 +7,21 @@ import React, {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import {Linking, Platform, StyleSheet, View} from 'react-native';
-import {EventEmitter} from 'events';
-import {WebView} from './WebView';
-import {PLAYER_STATES, CUSTOM_USER_AGENT} from './constants';
+import { Linking, Platform, StyleSheet, View } from 'react-native';
+import { EventEmitter } from 'events';
+import { WebView } from './WebView';
+import { PLAYER_STATES, CUSTOM_USER_AGENT } from './constants';
 import {
   playMode,
   soundMode,
   MAIN_SCRIPT,
   PLAYER_FUNCTIONS,
 } from './PlayerScripts';
-import {deepComparePlayList} from './utils';
 
 const PeertubeIframe = (props, ref) => {
   const {
     height,
     width,
-    playList,
     play = false,
     mute = false,
     volume = 100,
@@ -33,21 +31,19 @@ const PeertubeIframe = (props, ref) => {
     videoUrl,
     playbackRate = 1,
     contentScale = 1.0,
-    onReady = _event => {},
-    playListStartIndex = 0,
+    onReady = _event => { },
     initialPlayerParams,
     allowWebViewZoom = false,
     forceAndroidAutoplay = false,
-    onChangeState = _event => {},
-    onFullScreenChange = _status => {},
-    onPlaybackQualityChange = _quality => {},
-    onPlaybackRateChange = _playbackRate => {},
+    onChangeState = _event => { },
+    onFullScreenChange = _status => { },
+    onPlaybackQualityChange = _quality => { },
+    onPlaybackRateChange = _playbackRate => { },
     playbackQuality = -1,
     videoUrlParameters = {},
   } = props;
 
   const [playerReady, setPlayerReady] = useState(false);
-  const lastPlayListRef = useRef(playList);
   const initialPlayerParamsRef = useRef(initialPlayerParams || {});
 
   const webViewRef = useRef(null);
@@ -68,19 +64,19 @@ const PeertubeIframe = (props, ref) => {
         });
       },
       isMuted: () => {
-        webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.isMutedScript);
+        webViewRef.current?.injectJavaScript(PLAYER_FUNCTIONS.isMutedScript);
         return new Promise(resolve => {
           eventEmitter.current.once('isMuted', resolve);
         });
       },
       getVolume: () => {
-        webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.getVolumeScript);
+        webViewRef.current?.injectJavaScript(PLAYER_FUNCTIONS.getVolumeScript);
         return new Promise(resolve => {
           eventEmitter.current.once('getVolume', resolve);
         });
       },
       getPlaybackRate: () => {
-        webViewRef.current.injectJavaScript(
+        webViewRef.current?.injectJavaScript(
           PLAYER_FUNCTIONS.getPlaybackRateScript,
         );
         return new Promise(resolve => {
@@ -88,7 +84,7 @@ const PeertubeIframe = (props, ref) => {
         });
       },
       getAvailablePlaybackRates: () => {
-        webViewRef.current.injectJavaScript(
+        webViewRef.current?.injectJavaScript(
           PLAYER_FUNCTIONS.getAvailablePlaybackRatesScript,
         );
         return new Promise(resolve => {
@@ -96,7 +92,7 @@ const PeertubeIframe = (props, ref) => {
         });
       },
       getAvailablePlaybackQualities: () => {
-        webViewRef.current.injectJavaScript(
+        webViewRef.current?.injectJavaScript(
           PLAYER_FUNCTIONS.getAvailablePlaybackQualitiesScript,
         );
         return new Promise(resolve => {
@@ -104,9 +100,17 @@ const PeertubeIframe = (props, ref) => {
         });
       },
       seekTo: (seconds, allowSeekAhead) => {
-        webViewRef.current.injectJavaScript(
+        webViewRef.current?.injectJavaScript(
           PLAYER_FUNCTIONS.seekToScript(seconds, allowSeekAhead),
         );
+      },
+      setResolution: index => {
+        webViewRef.current?.injectJavaScript(
+          PLAYER_FUNCTIONS.setResolutionScript(index),
+        );
+      },
+      setRate: rate => {
+        webViewRef.current?.injectJavaScript(PLAYER_FUNCTIONS.setRate(rate));
       },
     }),
     [],
@@ -122,29 +126,10 @@ const PeertubeIframe = (props, ref) => {
       playMode[play],
       soundMode[mute],
       PLAYER_FUNCTIONS.setVolume(volume),
-      PLAYER_FUNCTIONS.setPlaybackRate(playbackRate),
-      PLAYER_FUNCTIONS.setPlaybackQuality(playbackQuality),
-    ].forEach(webViewRef.current.injectJavaScript);
+      PLAYER_FUNCTIONS.setRate(playbackRate),
+      PLAYER_FUNCTIONS.setResolutionScript(playbackQuality),
+    ].forEach(webViewRef.current?.injectJavaScript);
   }, [play, mute, volume, playbackRate, playerReady, playbackQuality]);
-
-  useEffect(() => {
-    if (!playerReady) {
-      // no instance of player is ready
-      return;
-    }
-
-    // Also, right now, we are helping users by doing "deep" comparisons of playList prop,
-    // but in the next major we should leave the responsibility to user (either via useMemo or moving the array outside)
-    if (!playList || deepComparePlayList(lastPlayListRef.current, playList)) {
-      return;
-    }
-
-    lastPlayListRef.current = playList;
-
-    webViewRef.current.injectJavaScript(
-      PLAYER_FUNCTIONS.loadPlaylist(playList, playListStartIndex, play),
-    );
-  }, [playList, play, playListStartIndex, playerReady]);
 
   const updatePlayerState = useCallback(
     newState => {
@@ -165,10 +150,10 @@ const PeertubeIframe = (props, ref) => {
 
   const onWebMessage = useCallback(
     event => {
-      // console.log('onWebMessage', event.nativeEvent.data);
+      console.log('onWebMessage', event.nativeEvent.data);
       try {
         const message = JSON.parse(event.nativeEvent.data);
-        console.log('onWebMessage', message.eventType, message.data);
+        //console.log('onWebMessage', message.eventType, message.data);
 
         switch (message.eventType) {
           case 'fullScreenChange':
@@ -182,6 +167,7 @@ const PeertubeIframe = (props, ref) => {
             setPlayerReady(true);
             break;
           case 'playerQualityChange':
+            console.log('onPlaybackQualityChange !!!! ', event);
             onPlaybackQualityChange(message.data);
             break;
           case 'playbackRateChange':
@@ -264,21 +250,19 @@ const PeertubeIframe = (props, ref) => {
 
     const vidUrl = videoUrlSafe.href.replace(videoUrl + '/', videoUrl);
     console.log('url', vidUrl);
-    const ytScript = MAIN_SCRIPT(
+    const peertubeScript = MAIN_SCRIPT(
       vidUrl,
-      lastPlayListRef.current,
       //      initialPlayerParamsRef.current,
       allowWebViewZoom,
       contentScale,
     );
 
-    const res = {html: ytScript.htmlString, videoUrl: vidUrl};
+    const res = { html: peertubeScript.htmlString, videoUrl: vidUrl };
     return res;
   }, [allowWebViewZoom, contentScale, videoUrl, videoUrlParameters]);
 
-  //console.log('loading WebView with source', source);
   return (
-    <View style={[{height, width}, viewContainerStyle]}>
+    <View style={[{ height, width }, viewContainerStyle]}>
       <WebView
         bounces={false}
         originWhitelist={['*']}
@@ -291,7 +275,7 @@ const PeertubeIframe = (props, ref) => {
         }
         userAgent={
           forceAndroidAutoplay
-            ? Platform.select({android: CUSTOM_USER_AGENT, ios: ''})
+            ? Platform.select({ android: CUSTOM_USER_AGENT, ios: '' })
             : ''
         }
         // props above this are override-able
@@ -310,7 +294,7 @@ const PeertubeIframe = (props, ref) => {
 };
 
 const styles = StyleSheet.create({
-  webView: {backgroundColor: 'transparent'},
+  webView: { backgroundColor: 'transparent' },
 });
 
 export default forwardRef(PeertubeIframe);

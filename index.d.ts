@@ -24,46 +24,28 @@ export interface PeertubeIframeRef {
   getAvailablePlaybackRates: () => Promise<number[]>;
   getAvailablePlaybackQualities: () => Promise<PeertubePlaybackQuality[]>;
   seekTo: (seconds: number, allowSeekAhead: boolean) => void;
+  setResolution: (index: number) => void;
+  setRate: (rate: number) => void;
 }
 
-export interface PeertubeIframeUrlParameters {
-    start: number | string
-    stop: number | string
-    controls: number | string
-    controlBar: number | string
-    peertubeLink: number | string
-    muted: number | string
-    loop: number | string
-    subtitle: string
-    autoplay: number | string
-    playbackRate: number | string
-    title: number | string
-    warningTitle: number | string
-    p2p: number | string
-    bigPlayBackgroundColor: string
-    foregroundColor: string
-    mode: string
-    waitPasswordFromEmbedAPI: number | string
-}
-
-// FIXME
 export interface InitialPlayerParams {
-  loop?: boolean;
-  controls?: boolean;
-  cc_lang_pref?: string;
-  showClosedCaptions?: boolean;
-  color?: string;
-  start?: Number;
-  end?: Number;
-  preventFullScreen?: boolean;
-  playerLang?: String;
-  iv_load_policy?: Number;
-  /** 
-   * @deprecated - This parameter has no effect since August 15, 2023
-   * https://developers.google.com/peertube/player_parameters#modestbranding
-   */
-  deprecated?: boolean;
-  rel?: boolean;
+  start?: number | string;
+  stop?: number | string;
+  controls?: number | string;
+  controlBar?: number | string;
+  peertubeLink?: number | string;
+  loop?: number | string;
+  muted?: number | string;
+  subtitle?: string;
+  autoplay?: number | string;
+  playbackRate?: number | string;
+  title?: string;
+  warningTitle?: string;
+  p2p?: number | string;
+  bigPlayBackgroundColor?: string;
+  foregroundColor?: string;
+  mode?: string;
+  waitPasswordFromEmbed?: number | string;
 }
 
 export interface PeertubeIframeProps {
@@ -83,16 +65,6 @@ export interface PeertubeIframeProps {
    * Specifies the Peertube Video Url of the video to be played.
    */
   videoUrl?: string;
-  /**
-   * Specifies the playlist to play. It can be either the playlist ID or a list of video IDs
-   *
-   * @example
-   * playList={'PLbpi6ZahtOH6Blw3RGYpWkSByi_T7Rygb'}
-   *
-   * @example
-   * playList={['QRt7LjqJ45k', 'fHsa9DqmId8']}
-   */
-  playList?: Array<string> | string;
   /**
    * Flag to tell the player to play or pause the video.
    */
@@ -130,12 +102,6 @@ export interface PeertubeIframeProps {
    * This event fires whenever a player has finished loading and is ready.
    */
   onReady?: () => void;
-  /**
-   * Starts the playlist from the given index
-   *
-   * Works only if the playlist is a list of video IDs.
-   */
-  playListStartIndex?: number;
   initialPlayerParams?: InitialPlayerParams;
   /**
    * Changes user string to make autoplay work on the iframe player for some android devices.
@@ -170,8 +136,6 @@ export interface PeertubeIframeProps {
    * <meta /> tag on the webpage
    */
   contentScale?: number;
-
-  videoUrlParameters: PeertubeIframeUrlParameters;
 }
 
 declare const PeertubeIframe: React.VFC<PeertubeIframeProps>;
