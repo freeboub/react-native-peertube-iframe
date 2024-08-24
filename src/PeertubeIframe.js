@@ -23,6 +23,9 @@ const PeertubeIframe = (props, ref) => {
     webViewProps,
     videoUrl,
     contentScale = 1.0,
+    volume = 100,
+    playbackRate = 1,
+    playbackQuality = -1,
     onReady = _event => {},
     initialPlayerParams = {},
     allowWebViewZoom = false,
@@ -31,9 +34,9 @@ const PeertubeIframe = (props, ref) => {
     onFullScreenChange = _status => {},
     onPlaybackQualityChange = _quality => {},
     onPlaybackRateChange = _playbackRate => {},
-    onChangeDuration = _duration => {}, // FIXME doc
-    onChangePosition = _position => {}, // FIXME doc
-    onChangeVolume = _volume => {}, // FIXME doc
+    onChangeDuration = _duration => {},
+    onChangePosition = _position => {},
+    onChangeVolume = _volume => {},
   } = props;
 
   const initialPlayerParamsRef = useRef(initialPlayerParams || {});
@@ -129,17 +132,34 @@ const PeertubeIframe = (props, ref) => {
     [],
   );
 
-  // do not remove this function, it can be useful in the future to force initialization of some input fields
-  // This function shall be called in the onReady function
-  // useEffect(() => {
-  //   // This code allow to inject multiple script values at startup
-  //   [
-  //     playMode[play],
-  //     //PLAYER_FUNCTIONS.setVolume(volume),
-  //     //PLAYER_FUNCTIONS.setRate(playbackRate),
-  //     //PLAYER_FUNCTIONS.setResolutionScript(playbackQuality),
-  //   ].forEach(webViewRef.current?.injectJavaScript);
-  // }, [play, playerReady]);
+  useEffect(() => {
+    webViewRef.current?.injectJavaScript(playMode[play]);
+  }, [play]);
+
+  useEffect(() => {
+    webViewRef.current?.injectJavaScript(PLAYER_FUNCTIONS.setVolume(volume));
+  }, [volume]);
+
+  useEffect(() => {
+    webViewRef.current?.injectJavaScript(
+      PLAYER_FUNCTIONS.setRate(playbackRate),
+    );
+  }, [playbackRate]);
+
+  useEffect(() => {
+    webViewRef.current?.injectJavaScript(
+      PLAYER_FUNCTIONS.setResolutionScript(playbackQuality),
+    );
+  }, [playbackQuality]);
+
+  const updateInitialState = useCallback(() => {
+    [
+      playMode[play],
+      PLAYER_FUNCTIONS.setVolume(volume),
+      PLAYER_FUNCTIONS.setRate(playbackRate),
+      PLAYER_FUNCTIONS.setResolutionScript(playbackQuality),
+    ].forEach(webViewRef.current?.injectJavaScript);
+  }, [play, playbackQuality, playbackRate, volume]);
 
   const updatePlayerState = useCallback(
     newState => {
@@ -181,6 +201,7 @@ const PeertubeIframe = (props, ref) => {
             updatePlayerState(message.data);
             break;
           case 'playerReady':
+            updateInitialState();
             onReady();
             break;
           case 'playerQualityChange':
@@ -201,6 +222,7 @@ const PeertubeIframe = (props, ref) => {
     [
       onFullScreenChange,
       updatePlayerState,
+      updateInitialState,
       onReady,
       onPlaybackQualityChange,
       onPlaybackRateChange,

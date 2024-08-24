@@ -1,4 +1,4 @@
-import {MUTE_MODE, PAUSE_MODE, PLAY_MODE, UNMUTE_MODE} from './constants';
+import {PAUSE_MODE, PLAY_MODE} from './constants';
 
 export const PLAYER_FUNCTIONS = {
   playVideo: 'player.play(); true;',
@@ -76,7 +76,7 @@ export const MAIN_SCRIPT = (videoUrl, allowWebViewZoom, contentScale) => {
 
   const safeData = {
     videoUrl_s,
-    contentScale_s,
+    scale,
     allowWebViewZoom,
   };
 
