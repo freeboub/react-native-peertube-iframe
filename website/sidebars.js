@@ -4,13 +4,8 @@ module.exports = {
     Documentation: [
       'component-props',
       'component-ref-methods',
-      'module-methods',
+      // 'module-methods',
     ],
-    FAQ: [
-      'play-store-compatibility',
-      'remove-context-share',
-      'elapsed-time',
-      'navigation-crash',
-    ],
+    FAQ: ['remove-context-share', 'elapsed-time', 'navigation-crash'],
   },
 };
