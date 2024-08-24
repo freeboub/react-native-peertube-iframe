@@ -9,7 +9,6 @@ module.exports = {
   organizationName: 'freeboub',
   projectName: 'react-native-peertube-iframe',
   themeConfig: {
-    sidebarCollapsible: false,
     colorMode: {
       defaultMode: 'dark',
     },
@@ -26,9 +25,6 @@ module.exports = {
           position: 'right',
         },
       ],
-    },
-    googleAnalytics: {
-      trackingID: 'UA-165995640-2',
     },
   },
   presets: [

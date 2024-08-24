@@ -11,7 +11,8 @@
     "prepare": "rimraf ./dist && babel src --out-dir dist",
     "release": "release-it",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "docs": "yarn --cwd website build"
   },
   "repository": {
     "type": "git",
