@@ -12,7 +12,7 @@
     "release": "release-it",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build",
-    "docs": "yarn --cwd website build"
+    "docs": "yarn --cwd website && yarn --cwd website build"
   },
   "repository": {
     "type": "git",
