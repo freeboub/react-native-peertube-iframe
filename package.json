@@ -9,7 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && babel src --out-dir dist",
     "prepare": "rimraf ./dist && babel src --out-dir dist",
-    "release": "release-it"
+    "release": "release-it",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -56,6 +58,7 @@
     "@react-native-community/eslint-config": "^2.0.0",
     "@release-it/conventional-changelog": "^7.0.2",
     "eslint": "^7.7.0",
+    "gh-pages": "^6.0.0",
     "metro-react-native-babel-preset": "^0.64.0",
     "react": ">=16.8.6",
     "react-native": ">=0.60",
