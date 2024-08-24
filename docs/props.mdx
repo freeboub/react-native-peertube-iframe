@@ -135,22 +135,14 @@ This event fires whenever the video playback quality changes. It might signal a 
 
 The data value that the API passes to the event listener function will be a string that identifies the new playback quality. Possible values are:
 
-| Quality |
-| ------- |
-| small   |
-| medium  |
-| large   |
-| hd720   |
-| hd1080  |
-| highres |
+The PeertubePlaybackQuality object is the following:
 
----
-
-### `mute`
-
-<Type>Boolean</Type>
-
-Flag to tell the player to mute the video.
+| Field | Description |
+| ------- | |
+| id   | unique id of quality |
+| label | label to display |
+| height | height resolution of the content |
+| active | string: 'disabled' or 'showing' |
 
 ---
 
@@ -159,6 +151,16 @@ Flag to tell the player to mute the video.
 <Type>Number</Type>
 
 Sets the volume. Accepts an integer between `0` and `100`.
+
+---
+
+### `onChangeVolume`
+
+<Type>function(volume: number)</Type>
+
+This event fires whenever the video volume changes.
+
+Possible values are between 0 and 1
 
 ---
 
@@ -181,16 +183,6 @@ The `getAvailablePlaybackRates` method will return the possible playback rates f
 This sets the playback quality for the current video.
 
 The `getAvailablePlaybackQualities` method will return the possible playback qualities for the currently playing video.
-
----
-
-### `onPlaybackRateChange`
-
-<Type>function(playbackRate: Number)</Type>
-
-This event fires whenever the video playback rate changes. Your application should respond to the event and should not assume that the playback rate will automatically change when the `playbackRate` value changes. Similarly, your code should not assume that the video playback rate will only change as a result of an explicit call to setPlaybackRate.
-
-The `playbackRate` that the API passes to the event listener function will be a number that identifies the new playback rate. The `getAvailablePlaybackRates` method returns a list of the valid playback rates for the video currently cued or playing.
 
 ---
 
@@ -274,3 +266,25 @@ scale factor for initial-scale and maximum-scale in `<meta />` tag on the webpag
 :::info zoom -
 enabling the `allowWebViewZoom` disabled the maximum-scale attribute in the webpage
 :::
+
+---
+
+### `onChangeDuration`
+
+<Type>function(duration: number)</Type>
+
+This event fires whenever the video duration changes.
+
+Values are provided in seconds
+
+
+---
+
+### `onChangePosition`
+
+<Type>function(position: number)</Type>
+
+This event fires whenever the video playback position changes.
+
+Values are provided in seconds
+

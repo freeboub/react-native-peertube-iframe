@@ -123,15 +123,10 @@ PeertubePlaybackQuality represent a video selectable track with and id, a labal,
 
 ### `seekTo`
 
-<Type>function(seconds:Number, allowSeekAhead:Boolean):Void</Type>
+<Type>function(seconds:Number):Void</Type>
 
 Seeks to a specified time in the video. If the player is paused when the function is called, it will remain paused. If the function is called from another state (playing, etc.), the player will play the video.
 The seconds parameter identifies the time to which the player should advance.
-
-The player will advance to the closest keyframe before that time unless the player has already downloaded the portion of the video to which the user is seeking.
-
-https://developers.google.com/peertube/iframe_api_reference#seekTo
-#### fix it is google developer link
 
 ---
 
