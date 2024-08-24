@@ -1,5 +1,8 @@
 # React Native Peertube iframe
 
+// FIXME
+WARNING DO NOT USE THIS PROJECT FOR NOW.
+
 ![npm](https://img.shields.io/npm/v/react-native-peertube-iframe?style=for-the-badge) ![npm](https://img.shields.io/npm/dm/react-native-peertube-iframe?style=for-the-badge)
 
 A wrapper of the Peertube IFrame player API build for react native.
