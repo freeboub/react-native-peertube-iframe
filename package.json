@@ -65,7 +65,6 @@
   "dependencies": {
     "events": "^3.2.0"
   },
-  "packageManager": "yarn@3.6.4",
   "files": [
     "android",
     "ios",
