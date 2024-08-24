@@ -15,6 +15,14 @@ export interface PeertubePlaybackQuality {
   height: string;
   active: boolean
 }
+
+export interface PeertubeCaption {
+  id: string;
+  label: string;
+  src: stringé;
+  mode: 'disabled' | 'showing';
+}
+
 export interface PeertubeIframeRef {
   getDuration: () => Promise<number>;
   getCurrentTime: () => Promise<number>;
@@ -23,9 +31,12 @@ export interface PeertubeIframeRef {
   getPlaybackRate: () => Promise<number>;
   getAvailablePlaybackRates: () => Promise<number[]>;
   getAvailablePlaybackQualities: () => Promise<PeertubePlaybackQuality[]>;
-  seekTo: (seconds: number, allowSeekAhead: boolean) => void;
+  getAvailableCaption: () => Promise<PeertubeCaption[]>;
+  seekTo: (seconds: number) => void;
   setResolution: (index: number) => void;
   setRate: (rate: number) => void;
+  setVolume: (volume: number) => void;
+  setCaption: (id: string) => void;
 }
 
 export interface InitialPlayerParams {
@@ -102,6 +113,9 @@ export interface PeertubeIframeProps {
    * This event fires whenever a player has finished loading and is ready.
    */
   onReady?: () => void;
+  /**
+   * Initial prop to load the WebView.
+   */
   initialPlayerParams?: InitialPlayerParams;
   /**
    * Changes user string to make autoplay work on the iframe player for some android devices.
@@ -112,17 +126,29 @@ export interface PeertubeIframeProps {
    */
   onChangeState?: (event: PLAYER_STATES) => void;
   /**
+   * callback for when the player's position changes.
+   */
+  onChangePosition?: (event: number) => void;
+  /**
+   * callback for when the player's duration changes.
+   */
+  onChangeDuration?: (event: number) => void;
+  /**
+   * callback for when the player's volume changes.
+   */
+  onChangeVolume?: (event: number) => void;
+  /**
    * callback for when the fullscreen option is clicked in the player. It signals the new fullscreen state of the player.
    */
   onFullScreenChange?: (status: boolean) => void;
   /**
    * callback for when the video playback quality changes. It might signal a change in the viewer's playback environment.
    */
-  onPlaybackQualityChange?: (quality: string) => void;
+  onPlaybackQualityChange?: (quality: PeertubePlaybackQuality) => void;
   /**
    * callback for when the video playback rate changes.
    */
-  onPlaybackRateChange?: (event: string) => void;
+  onPlaybackRateChange?: (event: number) => void;
   /**
    * Flag to decide whether or not a user can zoom the video webview.
    */

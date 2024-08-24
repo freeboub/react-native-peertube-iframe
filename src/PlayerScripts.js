@@ -1,8 +1,6 @@
 import {MUTE_MODE, PAUSE_MODE, PLAY_MODE, UNMUTE_MODE} from './constants';
 
 export const PLAYER_FUNCTIONS = {
-  // muteVideo: 'player.mute(); true;',
-  // unMuteVideo: 'player.unMute(); true;',
   playVideo: 'player.play(); true;',
   pauseVideo: 'player.pause(); true;',
   isMutedScript: `
@@ -29,6 +27,12 @@ player.getPlaybackRates().then(rates => {
 });
 true;
 `,
+  getAvailableCaptionScript: `
+  player.getCaptions().then(captions => {
+    window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getAvailableCaption', data: captions}));
+  });
+  true;
+  `,
   getAvailablePlaybackQualitiesScript: `
 player.getResolutions().then(resolutions => {
  window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'getAvailablePlaybackQualities', data: resolutions}));
@@ -38,15 +42,17 @@ true;
   setVolume: volume => {
     return `player.setVolume(${volume}); true;`;
   },
+  setCaption: id => {
+    return `player.setCaption('${id}'); true;`;
+  },
 
-  seekToScript: (seconds, allowSeekAhead) => {
-    return `player.seek(${seconds}, ${allowSeekAhead}); true;`;
+  seekToScript: seconds => {
+    return `player.seek(${seconds}); true;`;
   },
   setResolutionScript: index => {
     return `player.setResolution(${index}); true;`;
   },
   setRate: playbackRate => {
-    console.log('*********** setPlaybackRate', playbackRate);
     return `player.setPlaybackRate(${playbackRate}); true;`;
   },
 };
@@ -54,11 +60,6 @@ true;
 export const playMode = {
   [PLAY_MODE]: PLAYER_FUNCTIONS.playVideo,
   [PAUSE_MODE]: PLAYER_FUNCTIONS.pauseVideo,
-};
-
-export const soundMode = {
-  [MUTE_MODE]: PLAYER_FUNCTIONS.muteVideo,
-  [UNMUTE_MODE]: PLAYER_FUNCTIONS.unMuteVideo,
 };
 
 export const MAIN_SCRIPT = (videoUrl, allowWebViewZoom, contentScale) => {
@@ -107,17 +108,18 @@ export const MAIN_SCRIPT = (videoUrl, allowWebViewZoom, contentScale) => {
       const PeerTubePlayer = window['PeerTubePlayer']
       let player = new PeerTubePlayer(document.querySelector('iframe'))
 
-      window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerReady'}))
+      player.ready.then(()=>{
+        window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerReady'}))
+      })
 
       player.addEventListener('playbackStatusUpdate', onPlayerStateChange)
       player.addEventListener('playbackStatusChange', onPlayerStateChange)
       player.addEventListener('resolutionUpdate', onPlaybackQualityChange)
-      //player.addEventListener('volumeChange', onPlayerStateChange)
 
       // FIXME not available, to be reported as a CR...
-      function onPlaybackRateChange(event) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playbackRateChange', data: event.data}))
-      }
+      // function onPlaybackRateChange(event) {
+      //   window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playbackRateChange', data: event.data}))
+      // }
 
       function onPlaybackQualityChange(event) {
         player.getResolutions().then((resolutions) => {
@@ -126,7 +128,7 @@ export const MAIN_SCRIPT = (videoUrl, allowWebViewZoom, contentScale) => {
         })
       }
 
-      function onPlayerStateChange(event) {  
+      function onPlayerStateChange(event) {
         window.ReactNativeWebView.postMessage(JSON.stringify({eventType: 'playerStateChange', data: event}))
       }
 
@@ -140,6 +142,7 @@ export const MAIN_SCRIPT = (videoUrl, allowWebViewZoom, contentScale) => {
       document.addEventListener('mozfullscreenchange', onFullScreenChange)
       document.addEventListener('msfullscreenchange', onFullScreenChange)
       document.addEventListener('webkitfullscreenchange', onFullScreenChange)
+
     </script>
   </body>
 </html>
