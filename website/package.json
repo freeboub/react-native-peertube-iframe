@@ -7,9 +7,8 @@
     "serve": "docusaurus serve",
     "deploy": "docusaurus deploy",
     "swizzle": "docusaurus swizzle",
-    "genIframe": "node generateIframe.js",
-    "start": "node generateIframe.js;docusaurus start",
-    "build": "node generateIframe.js;docusaurus build"
+    "start": "docusaurus start",
+    "build": "docusaurus build"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.3",

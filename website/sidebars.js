@@ -5,7 +5,6 @@ module.exports = {
       'component-props',
       'component-ref-methods',
       'module-methods',
-      'self-host-remote-source',
     ],
     FAQ: [
       'play-store-compatibility',

@@ -8,7 +8,8 @@
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && babel src --out-dir dist",
-    "prepare": "rimraf ./dist && babel src --out-dir dist"
+    "prepare": "rimraf ./dist && babel src --out-dir dist",
+    "release": "release-it"
   },
   "repository": {
     "type": "git",
@@ -53,14 +54,31 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@release-it/conventional-changelog": "^7.0.2",
     "eslint": "^7.7.0",
     "metro-react-native-babel-preset": "^0.64.0",
     "react": ">=16.8.6",
     "react-native": ">=0.60",
+    "release-it": "^16.2.1",
     "rimraf": "^3.0.2"
   },
   "dependencies": {
     "events": "^3.2.0"
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@3.6.4",
+  "files": [
+    "android",
+    "ios",
+    "windows",
+    "src",
+    "dist",
+    "!android/build",
+    "!android/buildOutput_*",
+    "!android/local.properties",
+    "!ios/build",
+    "!**/*.tsbuildinfo",
+    "!docs",
+    "!website",
+    "!examples"
+  ]
 }

@@ -6,7 +6,6 @@ A wrapper of the Peertube IFrame player API build for react native.
 
 - ✅ Works seamlessly on both ios and android platforms
 - ✅ Uses the webview player which is known to be more stable
-- ✅ Access to a vast API provided through the iframe peertube API
 - ✅ Supports multiple peertube player instances in a single page
 - ✅ Works on modals and overlay components
 - ✅ Expo support
