@@ -1,0 +1,31 @@
+
+name: deploy docs
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/deploy-docs.yml'
+      - 'website/**'
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build docs
+        run: |
+          yarn --cwd website build
+          touch website/build/.nojekyll
+
+      - name: Deploy docs to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: website/build
+
+permissions:
+  contents: write
