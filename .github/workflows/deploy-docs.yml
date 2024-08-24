@@ -18,7 +18,7 @@ jobs:
 
       - name: Build docs
         run: |
-          yarn --cwd website build
+          yarn --cwd website && yarn --cwd website build
           touch website/build/.nojekyll
 
       - name: Deploy docs to GitHub Pages
