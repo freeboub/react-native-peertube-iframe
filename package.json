@@ -1,6 +1,6 @@
 {
   "name": "react-native-peertube-iframe",
-  "version": "0.0.1",
+  "version": "0.1.0-beta.0",
   "description": "A simple wrapper around the peertube iframe js API for react native",
   "main": "dist/index.js",
   "types": "index.d.ts",
