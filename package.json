@@ -8,7 +8,9 @@
     "lint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && babel src --out-dir dist",
-    "prepare": "rimraf ./dist && babel src --out-dir dist"
+    "prepare": "rimraf ./dist && babel src --out-dir dist",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -53,6 +55,7 @@
     "@babel/core": "^7.2.2",
     "@react-native-community/eslint-config": "^2.0.0",
     "eslint": "^7.7.0",
+    "gh-pages": "^6.0.0",
     "metro-react-native-babel-preset": "^0.64.0",
     "rimraf": "^3.0.2"
   },
