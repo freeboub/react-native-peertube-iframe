@@ -1,5 +1,12 @@
 
 
+# [0.1.0](https://github.com/freeboub/react-native-peertube-iframe/compare/v0.1.0-beta.0...v0.1.0) (2024-08-25)
+
+
+### Bug Fixes
+
+* rename setResolution to setPlaybackQuality and improve doc ([f910d54](https://github.com/freeboub/react-native-peertube-iframe/commit/f910d545b339f26b1d7fcb068ed903015db0b30e))
+
 # [0.1.0-beta.0](https://github.com/freeboub/react-native-peertube-iframe/compare/v2.3.0...v0.1.0-beta.0) (2024-08-24)
 
 
