@@ -20,6 +20,8 @@ You may still find some imported code or documentations inherited from this repo
 
 [react-native-peertube-iframe](https://freeboub.github.io/react-native-peertube-iframe/)
 
+A demo application can be found here : [react-native-peertube-iframe-example](https://github.com/freeboub/react-native-peertube-iframe-example)
+
 ## Contributing
 
 Pull requests are welcome!
