@@ -130,21 +130,35 @@ The seconds parameter identifies the time to which the player should advance.
 
 ---
 
-### `setResolution`
+### `setPlaybackQuality`
 
 <Type>function(index:Number):Void</Type>
 
-FIXME descruption
+Set the current resolution / Playback quality to specified index. You should list the available resolutions with getAvailablePlaybackQualities or by listening on onPlaybackQualityChange.
 
 ### `setRate`
 
 <Type>function(rate:Number):Void</Type>
 
-FIXME description
-
+Set the current playback rate. You can list the available playback rates with getAvailablePlaybackRates 
 
 ### setVolume
 
-FIXME setCaption
+<Type>function(volume:Number):Void</Type>
 
-### FIXME add getAvailableCaption
+Set the current playback volume. Volumes is defined bewen 0 (muted) and 1 (100% volume)
+
+
+### setCaption
+
+<Type>function(id:String):Void</Type>
+
+Set the current playback caption (subtitle track). Pass the id of the track retrieved with getAvailableCaption function
+Setting an invalid id, will disable caption.
+
+### getAvailableCaption
+
+<Type>function(): Promise[Array[PeertubeCaption]]</Type>
+
+retrieve in a promise the list of available caption for the ongoing content.
+PeertubeCaption is composed of an id, a label, a src (the subtitle url) and a mode 'disabled' or 'showing'. 

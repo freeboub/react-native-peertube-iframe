@@ -112,9 +112,9 @@ const PeertubeIframe = (props, ref) => {
           PLAYER_FUNCTIONS.seekToScript(seconds),
         );
       },
-      setResolution: index => {
+      setPlaybackQuality: index => {
         webViewRef.current?.injectJavaScript(
-          PLAYER_FUNCTIONS.setResolutionScript(index),
+          PLAYER_FUNCTIONS.setPlaybackQualityScript(index),
         );
       },
       setRate: rate => {
@@ -148,7 +148,7 @@ const PeertubeIframe = (props, ref) => {
 
   useEffect(() => {
     webViewRef.current?.injectJavaScript(
-      PLAYER_FUNCTIONS.setResolutionScript(playbackQuality),
+      PLAYER_FUNCTIONS.setPlaybackQualityScript(playbackQuality),
     );
   }, [playbackQuality]);
 
@@ -157,7 +157,7 @@ const PeertubeIframe = (props, ref) => {
       playMode[play],
       PLAYER_FUNCTIONS.setVolume(volume),
       PLAYER_FUNCTIONS.setRate(playbackRate),
-      PLAYER_FUNCTIONS.setResolutionScript(playbackQuality),
+      PLAYER_FUNCTIONS.setPlaybackQualityScript(playbackQuality),
     ].forEach(webViewRef.current?.injectJavaScript);
   }, [play, playbackQuality, playbackRate, volume]);
 

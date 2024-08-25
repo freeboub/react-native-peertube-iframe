@@ -49,7 +49,7 @@ true;
   seekToScript: seconds => {
     return `player.seek(${seconds}); true;`;
   },
-  setResolutionScript: index => {
+  setPlaybackQualityScript: index => {
     return `player.setResolution(${index}); true;`;
   },
   setRate: playbackRate => {

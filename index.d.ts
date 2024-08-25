@@ -19,7 +19,7 @@ export interface PeertubePlaybackQuality {
 export interface PeertubeCaption {
   id: string;
   label: string;
-  src: stringé;
+  src: string;
   mode: 'disabled' | 'showing';
 }
 
@@ -33,7 +33,7 @@ export interface PeertubeIframeRef {
   getAvailablePlaybackQualities: () => Promise<PeertubePlaybackQuality[]>;
   getAvailableCaption: () => Promise<PeertubeCaption[]>;
   seekTo: (seconds: number) => void;
-  setResolution: (index: number) => void;
+  setPlaybackQuality: (index: number) => void;
   setRate: (rate: number) => void;
   setVolume: (volume: number) => void;
   setCaption: (id: string) => void;
