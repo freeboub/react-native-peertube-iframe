@@ -29,6 +29,40 @@ export const Important = ({children, color}) => (
   </span>
 );
 
+---
+
+### `allowWebViewZoom`
+
+<Type>Boolean</Type>
+
+Controls whether the embedded webview allows user to zoom in. Defaults to `false`
+
+---
+
+### `contentScale`
+
+<Type>Number</Type>
+
+scale factor for initial-scale and maximum-scale in `<meta />` tag on the webpage. Defaults to `1.0`
+
+:::info zoom -
+enabling the `allowWebViewZoom` disabled the maximum-scale attribute in the webpage
+:::
+
+---
+
+### `forceAndroidAutoplay`
+
+<Type>Boolean</Type>
+
+Changes user string to make autoplay work on the iframe player for some android devices.
+
+:::info user agent string used -
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36';
+:::
+
+---
+
 ### `height`
 
 <Type>Number</Type> <Important>Required</Important>
@@ -38,151 +72,6 @@ height of the webview container
 :::note
 Embedded players must have a viewport that is at least 200px by 200px. If the player displays controls, it must be large enough to fully display the controls without shrinking the viewport below the minimum size. We recommend 16:9 players are at least 480 pixels wide and 270 pixels tall.
 :::
-
----
-
-### `width`
-
-<Type>Number</Type>
-
-width of the webview container
-
-:::tip
-The player will grow to fit the width of its parent, unless the parent has specified `alignItems` or `justifyContent` (depending on flex direction) in which case a width is required.
-:::
-
-:::note
-Embedded players must have a viewport that is at least 200px by 200px. If the player displays controls, it must be large enough to fully display the controls without shrinking the viewport below the minimum size. We recommend 16:9 players are at least 480 pixels wide and 270 pixels tall.
-:::
-
----
-
-### `videoUrl`
-
-<Type>String</Type>
-
-Specifies the Peertube Video url of the video to be played.
-
----
-
-### `play`
-
-<Type>Boolean</Type>
-
-Flag to tell the player to play or pause the video.
-
-Make sure you match this flag `onChangeState` to handle user pausing
-the video from the peertube player UI
-
-:::note autoPlay
-The HTML5 `<video>` element, in certain mobile browsers (such as Chrome and Safari), only allows playback to take place if it's initiated by user interaction (such as tapping on the player).
-
-However, the webview provides APIs to overcome this and will allow auto play in most cases. Use the [forceAndroidAutoplay](#forceandroidautoplay) prop if autoplay still doesn't work. (usually is affected by older android devices)
-:::
-
----
-
-### `ref`
-
-<Type>PeertubeIframeRef</Type>
-
-Gives access to the player reference. This can be used to access player functions.
-
-[Player Functions Documentation](component-ref-methods)
-
----
-
-### `onChangeState`
-
-<Type>function(event: string)</Type>
-
-This event fires whenever the player's state changes. The callback is fired with an event (string) that corresponds to the new player state. Possible values are:
-
-| events    | description                                                 |
-| --------- | ----------------------------------------------------------- |
-| unstarted | fired before the first video is loaded                      |
-| playing   | current video is playing                                    |
-| paused    | current video is paused                                     |
-| ended     | video has finished playing the video                        |
-
----
-
-### `onReady`
-
-<Type>function(event: string)</Type>
-
-This event fires when the player has finished loading and is ready to begin receiving API calls. Your application should implement this function if you want to automatically execute certain operations, such as playing the video or displaying information about the video, as soon as the player is ready.
-
----
-
-### `onFullScreenChange`
-
-<Type>function(status: string)</Type>
-
-This event fires whenever the player goes in or out of fullscreen mode with a boolean that identifies the new fullscreen status
-
-:::caution
-android only, see [issue #45](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/45) for work on ios support
-:::
-
----
-
-### `onPlaybackQualityChange`
-
-<Type>function(quality: PeertubePlaybackQuality)</Type>
-
-This event fires whenever the video playback quality changes. It might signal a change in the viewer's playback environment.
-
-The data value that the API passes to the event listener function will be a string that identifies the new playback quality. Possible values are:
-
-The PeertubePlaybackQuality object is the following:
-
-| Field | Description |
-| ------- | |
-| id   | unique id of quality |
-| label | label to display |
-| height | height resolution of the content |
-| active | string: 'disabled' or 'showing' |
-
----
-
-### `volume`
-
-<Type>Number</Type>
-
-Sets the volume. Accepts an integer between `0` and `100`.
-
----
-
-### `onChangeVolume`
-
-<Type>function(volume: number)</Type>
-
-This event fires whenever the video volume changes.
-
-Possible values are between 0 and 1
-
----
-
-### `playbackRate`
-
-<Type>Number</Type>
-
-This sets the suggested playback rate for the current video. If the playback rate changes, it will only change for the video that is already cued or being played.
-
-Calling this function does not guarantee that the playback rate will actually change. However, if the playback rate does change, the `onPlaybackRateChange` event will fire, and your code should respond to the event rather than the fact that it called the setPlaybackRate function.
-
-The `getAvailablePlaybackRates` method will return the possible playback rates for the currently playing video. However, if you set the suggestedRate parameter to a non-supported integer or float value, the player will round that value down to the nearest supported value in the direction of 1.
-
----
-
-### `playbackQuality`
-
-<Type>Number</Type>
-
-This sets the playback quality for the current video.
-
-The `getAvailablePlaybackQualities` method will return the possible playback qualities for the currently playing video.
 
 ---
 
@@ -219,53 +108,50 @@ changing these parameters might cause the player to restart or not change at all
 
 ---
 
-### `viewContainerStyle`
+### `onChangeState`
 
-A style prop that will be given to the webview container
+<Type>function(event: string)</Type>
 
----
+This event fires whenever the player's state changes. The callback is fired with an event (string) that corresponds to the new player state. Possible values are:
 
-### `webViewStyle`
-
-A style prop that will be given to the webview
-
----
-
-### `webViewProps`
-
-Props that are supplied to the underlying webview (react-native-webview). A full list of props can be found [here](https://github.com/react-native-community/react-native-webview/blob/master/docs/Reference.md#props-index)
+| events    | description                                                 |
+| --------- | ----------------------------------------------------------- |
+| unstarted | fired before the first video is loaded                      |
+| playing   | current video is playing                                    |
+| paused    | current video is paused                                     |
+| ended     | video has finished playing the video                        |
 
 ---
 
-### `forceAndroidAutoplay`
+### `onFullScreenChange`
 
-<Type>Boolean</Type>
+<Type>function(status: string)</Type>
 
-Changes user string to make autoplay work on the iframe player for some android devices.
+This event fires whenever the player goes in or out of fullscreen mode with a boolean that identifies the new fullscreen status
 
-:::info user agent string used -
-Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36';
+:::caution
+android only, see [issue #45](https://github.com/LonelyCpp/react-native-youtube-iframe/issues/45) for work on ios support
 :::
 
 ---
 
-### `allowWebViewZoom`
+### `onPlaybackQualityChange`
 
-<Type>Boolean</Type>
+<Type>function(quality: PeertubePlaybackQuality)</Type>
 
-Controls whether the embedded webview allows user to zoom in. Defaults to `false`
+This event fires whenever the video playback quality changes. It might signal a change in the viewer's playback environment.
 
----
+The data value that the API passes to the event listener function will be a string that identifies the new playback quality. Possible values are:
 
-### `contentScale`
+The PeertubePlaybackQuality object is the following:
 
-<Type>Number</Type>
+| Field | Description |
+| ------- | |
+| id   | unique id of quality |
+| label | label to display |
+| height | height resolution of the content |
+| active | string: 'disabled' or 'showing' |
 
-scale factor for initial-scale and maximum-scale in `<meta />` tag on the webpage. Defaults to `1.0`
-
-:::info zoom -
-enabling the `allowWebViewZoom` disabled the maximum-scale attribute in the webpage
-:::
 
 ---
 
@@ -277,7 +163,6 @@ This event fires whenever the video duration changes.
 
 Values are provided in seconds
 
-
 ---
 
 ### `onChangePosition`
@@ -287,4 +172,121 @@ Values are provided in seconds
 This event fires whenever the video playback position changes.
 
 Values are provided in seconds
+
+---
+
+### `onChangeVolume`
+
+<Type>function(volume: number)</Type>
+
+This event fires whenever the video volume changes.
+
+Possible values are between 0 and 1
+
+---
+
+### `onReady`
+
+<Type>function(event: string)</Type>
+
+This event fires when the player has finished loading and is ready to begin receiving API calls. Your application should implement this function if you want to automatically execute certain operations, such as playing the video or displaying information about the video, as soon as the player is ready.
+
+---
+
+### `play`
+
+<Type>Boolean</Type>
+
+Flag to tell the player to play or pause the video.
+
+Make sure you match this flag `onChangeState` to handle user pausing
+the video from the peertube player UI
+
+:::note autoPlay
+The HTML5 `<video>` element, in certain mobile browsers (such as Chrome and Safari), only allows playback to take place if it's initiated by user interaction (such as tapping on the player).
+
+However, the webview provides APIs to overcome this and will allow auto play in most cases. Use the [forceAndroidAutoplay](#forceandroidautoplay) prop if autoplay still doesn't work. (usually is affected by older android devices)
+:::
+
+---
+
+### `playbackQuality`
+
+<Type>Number</Type>
+
+This sets the playback quality for the current video.
+
+The `getAvailablePlaybackQualities` method will return the possible playback qualities for the currently playing video.
+
+---
+
+### `playbackRate`
+
+<Type>Number</Type>
+
+This sets the suggested playback rate for the current video. If the playback rate changes, it will only change for the video that is already cued or being played.
+
+Calling this function does not guarantee that the playback rate will actually change. However, if the playback rate does change, the `onPlaybackRateChange` event will fire, and your code should respond to the event rather than the fact that it called the setPlaybackRate function.
+
+The `getAvailablePlaybackRates` method will return the possible playback rates for the currently playing video. However, if you set the suggestedRate parameter to a non-supported integer or float value, the player will round that value down to the nearest supported value in the direction of 1.
+
+---
+
+### `videoUrl`
+
+<Type>String</Type>
+
+Specifies the Peertube Video url of the video to be played. You must pass the embed url.
+
+---
+
+### `ref`
+
+<Type>PeertubeIframeRef</Type>
+
+Gives access to the player reference. This can be used to access player functions.
+
+[Player Functions Documentation](component-ref-methods)
+---
+
+### `volume`
+
+<Type>Number</Type>
+
+Sets the volume. Accepts an integer between `0` and `100`.
+
+---
+
+### `webViewProps`
+
+Props that are supplied to the underlying webview (react-native-webview). A full list of props can be found [here](https://github.com/react-native-community/react-native-webview/blob/master/docs/Reference.md#props-index)
+
+---
+
+### `webViewStyle`
+
+A style prop that will be given to the webview
+
+---
+
+### `width`
+
+<Type>Number</Type>
+
+width of the webview container
+
+:::tip
+The player will grow to fit the width of its parent, unless the parent has specified `alignItems` or `justifyContent` (depending on flex direction) in which case a width is required.
+:::
+
+:::note
+Embedded players must have a viewport that is at least 200px by 200px. If the player displays controls, it must be large enough to fully display the controls without shrinking the viewport below the minimum size. We recommend 16:9 players are at least 480 pixels wide and 270 pixels tall.
+:::
+
+---
+
+### `viewContainerStyle`
+
+A style prop that will be given to the webview container
+
 

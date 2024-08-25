@@ -53,6 +53,46 @@ const App = () => {
 };
 ```
 
+---
+
+### `getAvailableCaption`
+
+<Type>function(): Promise[Array[PeertubeCaption]]</Type>
+
+retrieve in a promise the list of available caption for the ongoing content.
+PeertubeCaption is composed of an id, a label, a src (the subtitle url) and a mode 'disabled' or 'showing'. 
+
+---
+
+### `getAvailablePlaybackQualities`
+
+<Type>function(): Promise[Array[PeertubePlaybackQuality]]</Type>
+
+returns a promise that resolves to a list of available playback quality.
+
+PeertubePlaybackQuality represent a video selectable track with and id, a labal, the resolution and a boolean indicating if the tracks is selected.
+
+
+---
+
+### `getAvailablePlaybackRates`
+
+<Type>function(): Promise[Array[Number]]</Type>
+
+returns a promise that resolves to a list of available playback rates.
+
+The array of numbers are ordered from slowest to fastest playback speed. Even if the player does not support variable playback speeds, the array should always contain at least one value (1).
+
+---
+
+### `getCurrentTime`
+
+<Type>function(): Promise[Number]</Type>
+
+returns a promise that resolves to the elapsed time in seconds since the video started playing.
+
+---
+
 ### `getDuration`
 
 <Type>function(): Promise[Number]</Type>
@@ -67,19 +107,13 @@ getDuration() will return 0 until the video's metadata is loaded, which normally
 
 ---
 
-### `getCurrentTime`
+### `getPlaybackRate`
 
 <Type>function(): Promise[Number]</Type>
 
-returns a promise that resolves to the elapsed time in seconds since the video started playing.
+returns a promise that resolves to the current playback rate of the video.
 
----
-
-### `isMuted`
-
-<Type>function(): Promise[Boolean]</Type>
-
-returns a promise that resolves to true if the video is muted, false if not.
+The default playback rate is 1, which indicates that the video is playing at normal speed. Playback rates may include values like 0.25, 0.5, 1, 1.5, and 2.
 
 ---
 
@@ -91,33 +125,12 @@ returns a promise that resolves to the player's current volume, an integer betwe
 
 ---
 
-### `getPlaybackRate`
+### `isMuted`
 
-<Type>function(): Promise[Number]</Type>
+<Type>function(): Promise[Boolean]</Type>
 
-returns a promise that resolves to the current playback rate of the video.
+returns a promise that resolves to true if the video is muted, false if not.
 
-The default playback rate is 1, which indicates that the video is playing at normal speed. Playback rates may include values like 0.25, 0.5, 1, 1.5, and 2.
-
----
-
-### `getAvailablePlaybackRates`
-
-<Type>function(): Promise[Array[Number]]</Type>
-
-returns a promise that resolves to a list of available playback rates.
-
-The array of numbers are ordered from slowest to fastest playback speed. Even if the player does not support variable playback speeds, the array should always contain at least one value (1).
-
----
-
-### `getAvailablePlaybackQualities`
-
-<Type>function(): Promise[Array[PeertubePlaybackQuality]]</Type>
-
-returns a promise that resolves to a list of available playback quality.
-
-PeertubePlaybackQuality represent a video selectable track with and id, a labal, the resolution and a boolean indicating if the tracks is selected.
 
 ---
 
@@ -130,11 +143,14 @@ The seconds parameter identifies the time to which the player should advance.
 
 ---
 
-### `setPlaybackQuality`
+### `setCaption`
 
-<Type>function(index:Number):Void</Type>
+<Type>function(id:String):Void</Type>
 
-Set the current resolution / Playback quality to specified index. You should list the available resolutions with getAvailablePlaybackQualities or by listening on onPlaybackQualityChange.
+Set the current playback caption (subtitle track). Pass the id of the track retrieved with getAvailableCaption function
+Setting an invalid id, will disable caption.
+
+---
 
 ### `setRate`
 
@@ -142,23 +158,18 @@ Set the current resolution / Playback quality to specified index. You should lis
 
 Set the current playback rate. You can list the available playback rates with getAvailablePlaybackRates 
 
-### setVolume
+---
+
+### `setPlaybackQuality`
+
+<Type>function(index:Number):Void</Type>
+
+Set the current resolution / Playback quality to specified index. You should list the available resolutions with getAvailablePlaybackQualities or by listening on onPlaybackQualityChange.
+
+---
+### `setVolume`
 
 <Type>function(volume:Number):Void</Type>
 
 Set the current playback volume. Volumes is defined bewen 0 (muted) and 1 (100% volume)
 
-
-### setCaption
-
-<Type>function(id:String):Void</Type>
-
-Set the current playback caption (subtitle track). Pass the id of the track retrieved with getAvailableCaption function
-Setting an invalid id, will disable caption.
-
-### getAvailableCaption
-
-<Type>function(): Promise[Array[PeertubeCaption]]</Type>
-
-retrieve in a promise the list of available caption for the ongoing content.
-PeertubeCaption is composed of an id, a label, a src (the subtitle url) and a mode 'disabled' or 'showing'. 
