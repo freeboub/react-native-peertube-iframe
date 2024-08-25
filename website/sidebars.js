@@ -6,6 +6,6 @@ module.exports = {
       'component-ref-methods',
       // 'module-methods',
     ],
-    FAQ: ['remove-context-share', 'elapsed-time', 'navigation-crash'],
+    FAQ: ['remove-context-share', 'navigation-crash'],
   },
 };

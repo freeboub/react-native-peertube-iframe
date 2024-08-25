@@ -3,6 +3,8 @@
 ![npm](https://img.shields.io/npm/v/react-native-peertube-iframe?style=for-the-badge) ![npm](https://img.shields.io/npm/dm/react-native-peertube-iframe?style=for-the-badge)
 
 A wrapper of the Peertube IFrame player API build for react native.
+This wrapper is based on [react-native-youtube-iframe](https://github.com/LonelyCpp/react-native-youtube-iframe)
+You may still find some imported code or documentations inherited from this repository.
 
 - ✅ Works seamlessly on both ios and android platforms
 - ✅ Uses the webview player which is known to be stable
