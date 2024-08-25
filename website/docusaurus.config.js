@@ -16,7 +16,7 @@ module.exports = {
       title: 'React Native Peertube-iframe',
       logo: {
         alt: 'React Native Peertube-iframe Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo.png',
       },
       items: [
         {
